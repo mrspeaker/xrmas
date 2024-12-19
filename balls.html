@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <title>three.js xr - ball shooter</title>
+        <title>Change Tracker Christmas</title>
         <meta charset="utf-8" />
         <meta
             name="viewport"
@@ -10,13 +10,6 @@
         <link type="text/css" rel="stylesheet" href="main.css" />
     </head>
     <body>
-        <div id="info">
-            <a href="https://threejs.org" target="_blank" rel="noopener"
-                >three.js</a
-            >
-            xr - ball shooter
-        </div>
-
         <script type="importmap">
             {
                 "imports": {
@@ -35,6 +28,38 @@
             import { RapierPhysics } from "three/addons/physics/RapierPhysics.js";
 
             import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+
+            import { OBJLoader } from "three/addons/loaders/OBJLoader.js";
+            import { MTLLoader } from "three/addons/loaders/MTLLoader.js";
+            import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
+
+            const loader = new GLTFLoader().setPath("assets/");
+            loader.load("peng.glb", async function (gltf) {
+                const model = gltf.scene;
+
+                // wait until the model can be added to the scene without blocking due to shader compilation
+                //await renderer.compileAsync(model, camera, scene);
+                model.scale.set(10, 10, 10);
+
+                scene.add(model);
+            });
+
+            const mtlLoader = new MTLLoader();
+            mtlLoader.load("assets/xmas.mtl", (materials) => {
+                //materials.preload();
+                const loader = new OBJLoader();
+                loader.setMaterials(materials);
+                loader.load(
+                    "assets/xmas.obj",
+                    (obj) => {
+                        console.log("loadddded", obj);
+                        //object = obj;
+                        scene.add(obj);
+                    },
+                    console.log,
+                    console.error,
+                );
+            });
 
             let camera, scene, renderer;
             let controller1, controller2;
@@ -65,7 +90,7 @@
                     new THREE.LineBasicMaterial({ color: 0x808080 }),
                 );
                 room.geometry.translate(0, 3, 0);
-                scene.add(room);
+                //scene.add(room);
 
                 scene.add(new THREE.HemisphereLight(0xbbbbbb, 0x888888, 3));
 
@@ -254,7 +279,11 @@
                 // Spheres
 
                 const geometry = new THREE.IcosahedronGeometry(0.08, 3);
-                const material = new THREE.MeshLambertMaterial();
+                const material = new THREE.MeshPhongMaterial({
+                    emissive: 0x000000,
+                    specular: 0x050505,
+                    shininess: 1000,
+                });
 
                 spheres = new THREE.InstancedMesh(geometry, material, 800);
                 spheres.instanceMatrix.setUsage(THREE.DynamicDrawUsage); // will be updated every frame
@@ -273,7 +302,11 @@
                     spheres.setMatrixAt(i, matrix);
                     spheres.setColorAt(
                         i,
-                        color.setHex(0xffffff * Math.random()),
+                        color.setHex(
+                            [0xd90429, 0x003e1f, 0x73ba9b, 0xd5f2e3, 0xef233c][
+                                (Math.random() * 4) | 0
+                            ],
+                        ),
                     );
                 }
 
