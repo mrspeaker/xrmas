@@ -34,12 +34,20 @@
             import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 
             const loader = new GLTFLoader().setPath("assets/");
-            let pong = null;
+            let pong = [null, null];
             loader.load("peng.glb", async function (gltf) {
                 const model = gltf.scene;
                 model.scale.set(20, 20, 20);
-                model.position.set(0, 0, -8);
-                pong = model;
+                model.position.set(-4, 0, -8);
+                pong[0] = model;
+
+                scene.add(model);
+            });
+            loader.load("peng.glb", async function (gltf) {
+                const model = gltf.scene;
+                model.scale.set(20, 20, 20);
+                model.position.set(4, 0, -8);
+                pong[1] = model;
 
                 scene.add(model);
             });
@@ -354,8 +362,11 @@
                 handleController(controller1);
                 handleController(controller2);
 
-                if (pong) {
-                    pong.rotation.set(0, Math.sin(Date.now() * 0.001), 0);
+                if (pong[0]) {
+                    pong[0].rotation.set(0, Math.sin(Date.now() * 0.001), 0);
+                }
+                if (pong[1]) {
+                    pong[1].rotation.set(0, Math.cos(Date.now() * 0.0013), 0);
                 }
 
                 renderer.render(scene, camera);
