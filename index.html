@@ -26,7 +26,6 @@
             import { XRButton } from "three/addons/webxr/XRButton.js";
             import { XRControllerModelFactory } from "three/addons/webxr/XRControllerModelFactory.js";
             import { RapierPhysics } from "three/addons/physics/RapierPhysics.js";
-
             import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 
             import { OBJLoader } from "three/addons/loaders/OBJLoader.js";
@@ -34,6 +33,22 @@
             import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 
             const loader = new GLTFLoader().setPath("assets/");
+
+            let con = null;
+            let con_a = 0;
+            let con_dist = 40;
+            loader.load("conrad.glb", async function (gltf) {
+                const model = gltf.scene;
+                model.scale.set(20, 20, 20);
+                model.position.set(
+                    Math.sin(con_a) * con_dist,
+                    0,
+                    Math.cos(con_a) * con_dist,
+                );
+                scene.add(model);
+                con = model;
+            });
+
             let pong = [null, null];
             loader.load("peng.glb", async function (gltf) {
                 const model = gltf.scene;
@@ -367,6 +382,17 @@
                 }
                 if (pong[1]) {
                     pong[1].rotation.set(0, Math.cos(Date.now() * 0.0013), 0);
+                }
+                if (con) {
+                    con_a = (con_a + 0.02) % (Math.PI * 2);
+                    con.position.set(
+                        Math.sin(con_a) * con_dist,
+                        Math.sin(Date.now() * 0.01),
+                        Math.cos(con_a) * con_dist,
+                    );
+                    con.rotation.set(0, con_a, Math.cos(Date.now() * 0.0013));
+
+                    //con.rotation.set(0, 0, Math.cos(Date.now() * 0.0013));
                 }
 
                 renderer.render(scene, camera);
