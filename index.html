@@ -34,13 +34,12 @@
             import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 
             const loader = new GLTFLoader().setPath("assets/");
+            let pong = null;
             loader.load("peng.glb", async function (gltf) {
                 const model = gltf.scene;
-
-                // wait until the model can be added to the scene without blocking due to shader compilation
-                //await renderer.compileAsync(model, camera, scene);
-                model.scale.set(10, 10, 10);
-                model.position.set(0, -3, 0);
+                model.scale.set(20, 20, 20);
+                model.position.set(0, 0, -8);
+                pong = model;
 
                 scene.add(model);
             });
@@ -53,6 +52,14 @@
                 scene.add(model);
             });
 
+            loader.load("prez.glb", async function (gltf) {
+                const model = gltf.scene;
+                model.scale.set(5, 5, 5);
+                model.position.set(2, 0, -3);
+                model.rotation.set(0, 0.5, 0);
+                scene.add(model);
+            });
+
             const mtlLoader = new MTLLoader();
             mtlLoader.load("assets/xmas.mtl", (materials) => {
                 //materials.preload();
@@ -61,9 +68,8 @@
                 loader.load(
                     "assets/xmas.obj",
                     (obj) => {
-                        //object = obj;
                         //obj.scale.set(0.75, 0.75, 0.75);
-                        obj.position.set(0, 0, -5);
+                        obj.position.set(0, 0, -8);
                         scene.add(obj);
                     },
                     console.log,
@@ -347,6 +353,10 @@
             function animate() {
                 handleController(controller1);
                 handleController(controller2);
+
+                if (pong) {
+                    pong.rotation.set(0, Math.sin(Date.now() * 0.001), 0);
+                }
 
                 renderer.render(scene, camera);
             }
