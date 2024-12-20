@@ -40,6 +40,7 @@
                 // wait until the model can be added to the scene without blocking due to shader compilation
                 //await renderer.compileAsync(model, camera, scene);
                 model.scale.set(10, 10, 10);
+                model.position.set(0, -3, 0);
 
                 scene.add(model);
             });
@@ -60,8 +61,8 @@
                 loader.load(
                     "assets/xmas.obj",
                     (obj) => {
-                        console.log("loadddded", obj);
                         //object = obj;
+                        obj.scale.set(0.75, 0.75, 0.75);
                         scene.add(obj);
                     },
                     console.log,
